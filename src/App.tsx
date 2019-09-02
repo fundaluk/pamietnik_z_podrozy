@@ -3,10 +3,10 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonIcon, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { apps, flash, send } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
-import Details from './pages/Details';
+import Add from './pages/Add';
+import Maps from './pages/Maps';
+import Places from './pages/Places';
+import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,24 +33,28 @@ const App = () => (
       <IonPage id="main">
         <IonTabs>
           <IonRouterOutlet>
-            <Route path="/:tab(tab1)" component={Tab1} exact={true} />
-            <Route path="/:tab(tab2)" component={Tab2} exact={true} />
-            <Route path="/:tab(tab2)/details" component={Details} />
-            <Route path="/:tab(tab3)" component={Tab3} />
-            <Route exact path="/" render={() => <Redirect to="/tab1" />} />
+            <Route path="/:tab(add)" component={Add} exact={true} />
+            <Route path="/:tab(maps)" component={Maps} exact={true} />
+            <Route path="/:tab(places)" component={Places} exact={true} />
+            <Route path="/:tab(profile)" component={Profile} exact={true} />
+            <Route exact path="/" render={() => <Redirect to="/places" />} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/tab1">
+            <IonTabButton tab="places" href="/places">
               <IonIcon icon={flash} />
-              <IonLabel>Tab One</IonLabel>
+              <IonLabel>Miejsca</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab2" href="/tab2">
+            <IonTabButton tab="maps" href="/maps">
               <IonIcon icon={apps} />
-              <IonLabel>Tab Two</IonLabel>
+              <IonLabel>Mapa</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="tab3" href="/tab3">
+            <IonTabButton tab="add" href="/add">
               <IonIcon icon={send} />
-              <IonLabel>Tab Three</IonLabel>
+              <IonLabel>Dodaj</IonLabel>
+            </IonTabButton>
+            <IonTabButton tab="profile" href="/profile">
+              <IonIcon icon={send} />
+              <IonLabel>Pofil</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

@@ -1,12 +1,12 @@
 import React from 'react';
 import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 
-const Tab3Page: React.FunctionComponent = () => {
+const Profile: React.FunctionComponent = () => {
   return (
     <>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab Three</IonTitle>
+          <IonTitle>Mój Profil</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent />
@@ -14,4 +14,4 @@ const Tab3Page: React.FunctionComponent = () => {
   );
 };
 
-export default Tab3Page;
+export default Profile;

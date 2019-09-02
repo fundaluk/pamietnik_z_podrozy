@@ -1,23 +1,3 @@
-
-/* Ionic Variables and Theming. For more information, please see
-// https://beta.ionicframework.com/docs/theming/
-// The app direction is used to include
-// rtl styles in your app. For more information, please see
-// https://beta.ionicframework.com/docs/layout/rtl
-// $app-direction: ltr;
-// Ionic Colors
-// --------------------------------------------------
-// Named colors makes it easy to reuse colors on various components.
-// It's highly recommended to change the default colors
-// to match your app's branding. Ionic provides eight layered colors
-// that can be changed to theme an app. Additional colors can be
-// added as well (see below). For more information, please see
-// https://beta.ionicframework.com/docs/theming/advanced
-// To easily create custom color palettes for your app’s UI,
-// check out our color generator:
-// https://beta.ionicframework.com/docs/theming/color-generator
-*/
-
 :root {
   --ion-color-angular: #ac282b;
   --ion-color-communication: #8e8d93;
@@ -93,15 +73,6 @@
   --ion-color-light-tint: #f5f6f9;
 }
 
-/* Additional Ionic Colors
-// --------------------------------------------------
-// In order to add colors to be used with Ionic components,
-// the color should be added as a class with the convention `.ion-color-{COLOR}`
-// where `{COLOR}` is the color to be used on the Ionic component
-// and each variant is defined for the color. For more information, please see
-// https://beta.ionicframework.com/docs/theming/advanced
-*/
-
 .ion-color-favorite {
   --ion-color-base: #69bb7b;
   --ion-color-base-rgb: 105, 187, 123;
@@ -146,14 +117,6 @@
   --ion-color-shade: #344e86;
   --ion-color-tint: #4f6aa2;
 }
-
-/* Shared Variables
-// --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the CSS variables found in Ionic's source files.
-// To view all the possible Ionic variables, see:
-// https://beta.ionicframework.com/docs/theming/css-variables#ionic-variables
-*/
 
 :root {
   --ion-headings-font-weight: 300;
