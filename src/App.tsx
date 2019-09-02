@@ -1,12 +1,14 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonIcon, IonLabel, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs } from '@ionic/react';
+import { IonApp, IonPage, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, IonIcon, IonLabel } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { apps, flash, send } from 'ionicons/icons';
-import Add from './pages/Add';
-import Maps from './pages/Maps';
-import Places from './pages/Places';
-import Profile from './pages/Profile';
+// import { apps, flash, send } from 'ionicons/icons';
+// import Add from './pages/Add';
+// import Maps from './pages/Maps';
+// import Places from './pages/Places';
+// import Profile from './pages/Profile';
+
+import LandingPage from './pages/Landing';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -31,7 +33,10 @@ const App = () => (
   <IonApp>
     <IonReactRouter>
       <IonPage id="main">
-        <IonTabs>
+        <IonRouterOutlet>
+          <Route exact path="/" component={LandingPage} />
+        </IonRouterOutlet>
+        {/* <IonTabs>
           <IonRouterOutlet>
             <Route path="/:tab(add)" component={Add} exact={true} />
             <Route path="/:tab(maps)" component={Maps} exact={true} />
@@ -57,7 +62,7 @@ const App = () => (
               <IonLabel>Pofil</IonLabel>
             </IonTabButton>
           </IonTabBar>
-        </IonTabs>
+        </IonTabs> */}
       </IonPage>
     </IonReactRouter>
   </IonApp>
