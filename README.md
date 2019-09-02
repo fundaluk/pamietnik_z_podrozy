@@ -1,2 +1,1 @@
-# pamietnik_z_podrozy
-BAI Journey Diary App
+# BAI Journey Diary App
