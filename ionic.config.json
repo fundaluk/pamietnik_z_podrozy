@@ -1,0 +1,7 @@
+{
+  "name": "Journey Diary App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
