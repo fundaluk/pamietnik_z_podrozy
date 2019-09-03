@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { IonContent, IonGrid, IonCol, IonRow, IonText, IonIcon, IonButton } from '@ionic/react';
-import { map } from 'ionicons/icons';
+import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton } from '@ionic/react';
+
+import logo from '../images/logo.svg';
 
 const Landing: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   return (
@@ -18,11 +19,11 @@ const Landing: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
           </IonRow>
           <IonRow align-items-center justify-content-center>
             <IonCol style={{ marginBottom: '8px' }}>
-              <IonIcon
-                color="primary"
-                style={{ display: 'block', margin: '0 auto', fontSize: '146px' }}
-                icon={map}
-              ></IonIcon>
+              <img
+                src={logo}
+                alt="Logo"
+                style={{ display: 'block', margin: '0 auto', width: '146px', height: '146px' }}
+              ></img>
             </IonCol>
           </IonRow>
           <IonRow align-items-end justify-content-center>
