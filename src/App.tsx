@@ -10,6 +10,7 @@ import { IonReactRouter } from '@ionic/react-router';
 
 import LandingPage from './pages/Landing';
 import SingupPage from './pages/Singup';
+import GoogleSignupPage from './pages/GoogleSignup';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -36,6 +37,7 @@ const App = () => (
       <IonPage id="main">
         <IonRouterOutlet>
           <Route path="/signup" component={SingupPage} />
+          <Route path="/signup-google" component={GoogleSignupPage} />
           <Route exact path="/" component={LandingPage} />
         </IonRouterOutlet>
         {/* <IonTabs>
