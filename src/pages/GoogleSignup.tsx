@@ -1,26 +1,31 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton, IonIcon } from '@ionic/react';
 import { logoGoogle } from 'ionicons/icons';
 
+import FirebaseContext from '../components/FirebaseContext';
+
 const GoogleSignup: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
-  let user;
+  const firebase = useContext(FirebaseContext);
 
   const [error, setError] = useState<string | null>('');
 
   // Funckja odpowiedzialna za zalogowanie użytkownia z Google
   const handleLogin = async (event: Event) => {
     event.preventDefault();
-    console.log('LOGOWANIE Z GOOGLE');
+    try {
+      const response = await firebase.auth.signInWithPopup(firebase.googleProvider);
+      await firebase.db
+        .collection('users')
+        .doc(response.user.uid)
+        .set({ createAt: firebase.timestamp });
+      history.push('/places');
+    } catch (err) {
+      setError(err.message);
+    }
   };
-
-  // Sprawdź czy użytkownik jest zalogowany, jak tak to przekieruj do głównego widoku aplikacji
-  if (user) {
-    console.log('Użytkownik zalogowany');
-    return <h1>ZALOGOWANY</h1>;
-  }
 
   // Wyświetl formularz tworzenia konta jeżeli użytkownik nie jest zalogowany
   return (

@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton, IonItem, IonLabel, IonInput } from '@ionic/react';
 
+import FirebaseContext from '../components/FirebaseContext';
+
 const Singup: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
-  let user;
+  const firebase = useContext(FirebaseContext);
 
   const [email, setEmail] = useState<string | null>('');
   const [password, setPassowrd] = useState<string | null>('');
@@ -22,11 +24,20 @@ const Singup: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     }
   }, [email, password, confirm]);
 
-  // Sprawdź czy użytkownik jest zalogowany, jak tak to przekieruj do głównego widoku aplikacji
-  if (user) {
-    console.log('Użytkownik zalogowany');
-    return <h1>ZALOGOWANY</h1>;
-  }
+  // Funckja odpowiedzialna za zalogowanie użytkownia z Google
+  const handleSignup = async (event: Event) => {
+    event.preventDefault();
+    try {
+      const response = await firebase.auth.createUserWithEmailAndPassword(email, password);
+      await firebase.db
+        .collection('users')
+        .doc(response.user.uid)
+        .set({ createAt: firebase.timestamp });
+      history.push('/places');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   // Wyświetl formularz tworzenia konta jeżeli użytkownik nie jest zalogowany
   return (
@@ -103,7 +114,7 @@ const Singup: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
           </IonRow>
           <IonRow justify-content-center>
             <IonCol style={{ marginTop: '32px' }} offset="1" size="10">
-              <IonButton expand="block" color="primary" type="submit" disabled={!valid}>
+              <IonButton expand="block" color="primary" type="submit" disabled={!valid} onClick={handleSignup}>
                 Stwórz konto
               </IonButton>
             </IonCol>
