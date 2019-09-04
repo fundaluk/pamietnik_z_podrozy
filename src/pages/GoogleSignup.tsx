@@ -17,11 +17,11 @@ const GoogleSignup: React.FunctionComponent<RouteComponentProps> = ({ history })
     event.preventDefault();
     try {
       const response = await firebase.auth.signInWithPopup(firebase.googleProvider);
-      firebase.db
+      await firebase.db
         .collection('users')
         .doc(response.user.uid)
-        .set({ createAt: firebase.timestamp })
-        .then(() => history.push('places'));
+        .set({ createAt: firebase.timestamp });
+      history.push('/places');
     } catch (err) {
       setError(err.message);
     }

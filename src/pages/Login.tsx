@@ -19,7 +19,7 @@ const Login: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     event.preventDefault();
     try {
       await firebase.auth.signInWithEmailAndPassword(email, password);
-      history.push('/places');
+      history.push('/');
     } catch (err) {
       setError(err.message);
     }

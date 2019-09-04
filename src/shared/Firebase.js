@@ -1,7 +1,6 @@
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import 'firebase/storage';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,7 +17,6 @@ class Firebase {
     firebase.initializeApp(config);
     this.auth = firebase.auth();
     this.db = firebase.firestore();
-    this.storage = firebase.storage();
 
     this.timestamp = firebase.firestore.FieldValue.serverTimestamp();
     this.arrayUnion = firebase.firestore.FieldValue.arrayUnion;
