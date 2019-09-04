@@ -1,5 +1,7 @@
 import * as React from 'react';
+
 import { useContext, useEffect, useState, useRef } from 'react';
+
 import { RouteComponentProps } from 'react-router-dom';
 
 import {
@@ -27,7 +29,9 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const { user } = useContext(UserContext);
   const { displayName, email, photoURL } = user;
 
-  // Zmiana nazwy użytkownika - logika
+
+ // Zmiana nazwy użytkownika - logika
+
   const [username, setUsername] = useState<string>(displayName);
   const [usernameValid, setUsernameValid] = useState<boolean>(false);
   const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false);
@@ -41,7 +45,9 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     }
   }, [username]);
 
+
   const changeUsername = async (event: Event) => {
+
     event.preventDefault();
     setIsEditingUsername(!isEditingUsername);
   };
@@ -57,6 +63,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
       }
     }
   };
+
 
   // Zmiana obrazka użytkownika - logika
   const photoInputRef = useRef(null);
@@ -118,6 +125,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     try {
       firebase.auth.signOut().then(() => history.push('/'));
     } catch (err) {}
+
   };
 
   return (
@@ -158,6 +166,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
             </IonRow>
             <IonRow align-items-center justify-content-center>
               <IonCol style={{ marginBottom: '32px' }}>
+
                 {photoPreview ? (
                   <img
                     src={photoPreview}
@@ -171,6 +180,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
                     style={{ display: 'block', margin: '0 auto', width: '146px', height: '146px', borderRadius: '50%' }}
                   ></img>
                 )}
+
               </IonCol>
             </IonRow>
             <IonRow style={{ justifyContent: 'center' }}>
@@ -180,12 +190,15 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
                     Akceptuj
                   </IonButton>
                 ) : (
+
                   <IonButton expand="block" onClick={changeUsername} disabled={isEditingPhoto}>
+
                     Zmień nazwę
                   </IonButton>
                 )}
               </IonCol>
               <IonCol size="10">
+
                 <input
                   ref={photoInputRef}
                   type="file"
@@ -207,6 +220,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
               </IonCol>
             </IonRow>
             <IonRow style={{ justifyContent: 'center' }}>
+
               <IonCol size="10">
                 <IonButton expand="block" fill="clear" onClick={handleLogout}>
                   Wyloguj
