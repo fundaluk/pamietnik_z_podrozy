@@ -16,7 +16,6 @@ import {
   IonInput,
   IonTextarea,
   IonButton,
-  IonText,
 } from '@ionic/react';
 
 import MapInputField from '../components/MapInputField';
@@ -29,7 +28,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const [lng, setLng] = useState(19.955816843574212);
   const [name, setName] = useState('');
   const [description, setDescritpion] = useState('');
-  const [place, setPlace] = useState('');
   const [invalid, setInvalid] = useState(true);
 
   const firebase = useContext(FirebaseContext);
@@ -49,8 +47,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     map.panTo(location);
     setLat(location.lat());
     setLng(location.lng());
-
-    // Sprawdź lokacje - Places API
   };
 
   // Dodaj miesce do bazy danych
@@ -61,7 +57,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
       const ref = await firebase.db.collection('places').add({
         name,
         description,
-        place,
         location: new firebase.GeoPoint(lat, lng),
         user: user.uid,
         createdAt: firebase.timestamp,
@@ -75,7 +70,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     event.preventDefault();
     setName('');
     setDescritpion('');
-    setPlace('');
     history.push('/places');
   };
 
@@ -129,15 +123,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
               </MapInputField>
             </IonCol>
           </IonRow>
-          <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10">
-              <IonText>
-                <p>lat: {lat}</p>
-                <p>lng: {lng}</p>
-              </IonText>
-            </IonCol>
-          </IonRow>
-
           <IonRow align-items-center justify-content-center>
             <IonCol offset="1" size="10">
               <IonButton style={{ marginTop: '8px' }} expand="block" onClick={addPlace} disabled={invalid}>

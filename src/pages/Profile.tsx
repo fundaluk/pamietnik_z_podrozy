@@ -52,9 +52,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
       try {
         await firebase.auth.currentUser.updateProfile({ displayName: username });
         setIsEditingUsername(!isEditingUsername);
-      } catch (err) {
-        console.log(err);
-      }
+      } catch (err) {}
     }
   };
 

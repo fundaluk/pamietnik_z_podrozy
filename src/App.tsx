@@ -43,7 +43,6 @@ import { flash } from 'ionicons/icons';
 const App = () => {
   const firebase = useContext(FirebaseContext);
   const [user, initialising, error] = useAuthState(firebase.auth);
-  console.log(user);
   if (initialising) {
     return <LoadingPage />;
   }
