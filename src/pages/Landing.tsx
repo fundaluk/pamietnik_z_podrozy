@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { IonContent, IonGrid, IonCol, IonRow, IonText, IonIcon, IonButton } from '@ionic/react';
-import { map } from 'ionicons/icons';
+import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton } from '@ionic/react';
+
+import logo from '../images/logo.svg';
 
 import logo from '../images/logo.svg';
 
