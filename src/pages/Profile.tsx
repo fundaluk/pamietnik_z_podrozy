@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import {
@@ -27,6 +27,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const { user } = useContext(UserContext);
   const { displayName, email, photoURL } = user;
 
+  // Zmiana nazwy użytkownika - logika
   const [username, setUsername] = useState<string>(displayName);
   const [usernameValid, setUsernameValid] = useState<boolean>(false);
   const [isEditingUsername, setIsEditingUsername] = useState<boolean>(false);
@@ -40,7 +41,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     }
   }, [username]);
 
-  const changeUsername = (event: Event) => {
+  const changeUsername = async (event: Event) => {
     event.preventDefault();
     setIsEditingUsername(!isEditingUsername);
   };
@@ -57,7 +58,70 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     }
   };
 
-  const handleLogout = () => {
+  // Zmiana obrazka użytkownika - logika
+  const photoInputRef = useRef(null);
+  const [photoPreview, setPhotoPreview] = useState<string>('');
+  const [photoValid, setPhotoValid] = useState<boolean>(false);
+  const [isEditingPhoto, setIsEditingPhoto] = useState<boolean>(false);
+
+  const choosePhoto = () => {
+    const { current } = photoInputRef;
+    // Edytuje zdjęcie
+    setIsEditingPhoto(true);
+    // Czy jest element input
+    if (current) {
+      current.click();
+    }
+  };
+
+  const addPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { current } = photoInputRef;
+
+    // Czy jest element input i plik
+    if (current && current.files.length > 0) {
+      const file = event.target.files[0];
+      setPhotoValid(true);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handlePhotoChange = async (event: Event) => {
+    event.preventDefault();
+
+    const { current } = photoInputRef;
+
+    // Gdzie wrzucić plik i jak go nazwać
+    const storageRef = firebase.storage.ref();
+    const profilePhotoRef = storageRef.child(`${user.uid}/profilePhoto.jpg`);
+
+    // Czy jest element input i plik
+    if (current && current.files.length > 0) {
+      // Wrzuć plik
+      const file = current.files[0];
+
+      try {
+        const snapshot = await profilePhotoRef.put(file);
+        const newURL = await snapshot.ref.getDownloadURL();
+
+        await firebase.auth.currentUser.updateProfile({ photoURL: newURL });
+
+        setPhotoPreview('');
+        setPhotoValid(false);
+        setIsEditingPhoto(false);
+      } catch (err) {}
+    }
+  };
+
+  // Wylgowowanie - logika
+  const handleLogout = async (event: Event) => {
+    event.preventDefault();
+    if (usernameValid) {
+      try {
+        await firebase.auth.currentUser.updateProfile({ photoURL: null });
+      } catch (err) {
+        console.log(err);
+      }
+    }
     console.log('LOGOUT');
   };
 
@@ -99,11 +163,19 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
             </IonRow>
             <IonRow align-items-center justify-content-center>
               <IonCol style={{ marginBottom: '32px' }}>
-                <img
-                  src={photoURL || avatar}
-                  alt="Logo"
-                  style={{ display: 'block', margin: '0 auto', width: '146px', height: '146px', borderRadius: '50%' }}
-                ></img>
+                {photoPreview ? (
+                  <img
+                    src={photoPreview}
+                    alt="preview"
+                    style={{ display: 'block', margin: '0 auto', width: '146px', height: '146px', borderRadius: '50%' }}
+                  />
+                ) : (
+                  <img
+                    src={photoURL || avatar}
+                    alt="profile"
+                    style={{ display: 'block', margin: '0 auto', width: '146px', height: '146px', borderRadius: '50%' }}
+                  ></img>
+                )}
               </IonCol>
             </IonRow>
             <IonRow style={{ justifyContent: 'center' }}>
@@ -113,13 +185,30 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
                     Akceptuj
                   </IonButton>
                 ) : (
-                  <IonButton expand="block" onClick={changeUsername}>
+                  <IonButton expand="block" onClick={changeUsername} disabled={isEditingPhoto}>
                     Zmień nazwę
                   </IonButton>
                 )}
               </IonCol>
               <IonCol size="10">
-                <IonButton expand="block">Zmień avatar</IonButton>
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  placeholder="Dodaj zdjęcie"
+                  name="photo"
+                  onChange={addPhoto}
+                  style={{ display: 'none' }}
+                />
+                {isEditingPhoto ? (
+                  <IonButton expand="block" onClick={handlePhotoChange} disabled={!photoValid}>
+                    Akceptuj
+                  </IonButton>
+                ) : (
+                  <IonButton expand="block" onClick={choosePhoto} disabled={isEditingUsername}>
+                    Zmień avatar
+                  </IonButton>
+                )}
               </IonCol>
               <IonCol size="10">
                 <IonButton expand="block" fill="clear" onClick={handleLogout}>

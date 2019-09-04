@@ -5,8 +5,6 @@ import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton } from '@ionic/
 
 import logo from '../images/logo.svg';
 
-import logo from '../images/logo.svg';
-
 const Landing: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   return (
     <IonContent>
