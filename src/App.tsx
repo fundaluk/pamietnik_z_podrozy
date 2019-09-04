@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { IonApp, IonPage, IonRouterOutlet, IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
-import { IonReactRouter } from '@ionic/react-router';
+import { IonReactRouter, ViewManager } from '@ionic/react-router';
 
 import FirebaseContext from './components/FirebaseContext';
 import UserContext from './components/UserContext';
@@ -43,7 +43,7 @@ import { flash } from 'ionicons/icons';
 const App = () => {
   const firebase = useContext(FirebaseContext);
   const [user, initialising, error] = useAuthState(firebase.auth);
-
+  console.log(user);
   if (initialising) {
     return <LoadingPage />;
   }
@@ -60,10 +60,7 @@ const App = () => {
                   <Route path="/:tab(maps)" component={Maps} exact={true} />
                   <Route path="/:tab(places)" component={Places} exact={true} />
                   <Route path="/:tab(profile)" component={Profile} exact={true} />
-                  <Route path="/login" render={() => <Redirect to="/" />} />
-                  <Route path="/signup" render={() => <Redirect to="/" />} />
-                  <Route path="/signup-google" crender={() => <Redirect to="/" />} />
-                  <Route exact path="/" render={() => <Redirect to="/places" />} />
+                  <Route render={() => <h1>Hi</h1>} />
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">
                   <IonTabButton tab="places" href="/places">
@@ -85,16 +82,14 @@ const App = () => {
                 </IonTabBar>
               </IonTabs>
             ) : (
-              <IonRouterOutlet>
-                <Route path="/add" render={() => <Redirect to="/" />} />
-                <Route path="/maps" render={() => <Redirect to="/" />} />
-                <Route path="/places" render={() => <Redirect to="/" />} />
-                <Route path="/profile" render={() => <Redirect to="/" />} />
-                <Route path="/login" component={LoginPage} exact={true} />
-                <Route path="/signup" component={SingupPage} exact={true} />
-                <Route path="/signup-google" component={GoogleSignupPage} exact={true} />
-                <Route exact path="/" component={LandingPage} />
-              </IonRouterOutlet>
+              <ViewManager>
+                <IonRouterOutlet>
+                  <Route path="/login" component={LoginPage} exact={true} />
+                  <Route path="/signup" component={SingupPage} exact={true} />
+                  <Route path="/signup-google" component={GoogleSignupPage} exact={true} />
+                  <Route exact path="/" component={LandingPage} />
+                </IonRouterOutlet>
+              </ViewManager>
             )}
           </IonPage>
         </IonReactRouter>

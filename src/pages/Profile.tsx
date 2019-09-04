@@ -115,14 +115,9 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   // Wylgowowanie - logika
   const handleLogout = async (event: Event) => {
     event.preventDefault();
-    if (usernameValid) {
-      try {
-        await firebase.auth.currentUser.updateProfile({ photoURL: null });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    console.log('LOGOUT');
+    try {
+      firebase.auth.signOut().then(() => history.push('/'));
+    } catch (err) {}
   };
 
   return (
@@ -210,6 +205,8 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
                   </IonButton>
                 )}
               </IonCol>
+            </IonRow>
+            <IonRow style={{ justifyContent: 'center' }}>
               <IonCol size="10">
                 <IonButton expand="block" fill="clear" onClick={handleLogout}>
                   Wyloguj
