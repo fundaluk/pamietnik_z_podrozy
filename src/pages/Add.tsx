@@ -61,8 +61,12 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
         user: user.uid,
         createdAt: firebase.timestamp,
       });
+
+      setName('');
+      setDescritpion('');
       // Przekieruje do tego miejsca - widok
-      history.push(`/places/place/${ref.id}`);
+      history.push(`/maps`);
+
     } catch (err) {}
   };
 
@@ -72,6 +76,14 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     setDescritpion('');
     history.push('/places');
   };
+
+
+  // Znajdz miejsca w pobliżu
+  const fetchPlaces = (mapProps: any, map: any) => {
+    const { google } = mapProps;
+    const service = new google.maps.places.PlacesService(map);
+  };
+
 
   return (
     <>
@@ -117,8 +129,10 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px' }}>
-              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }}>
+
+            <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
+              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }} onReady={fetchPlaces}>
+
                 <Marker position={{ lat, lng }} />
               </MapInputField>
             </IonCol>
