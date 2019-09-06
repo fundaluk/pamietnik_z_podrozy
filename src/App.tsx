@@ -15,7 +15,6 @@ import LoginPage from './pages/Login';
 import SingupPage from './pages/Singup';
 
 import Add from './pages/Add';
-import Edit from './pages/Edit';
 import Maps from './pages/Maps';
 import Places from './pages/Places';
 import Profile from './pages/Profile';
@@ -59,7 +58,6 @@ const App = () => {
                   <Route path="/:tab(add)" component={Add} exact={true} />
                   <Route path="/:tab(maps)" component={Maps} exact={true} />
                   <Route path="/:tab(places)" component={Places} exact={true} />
-                  <Route path="/:tab(places)/:id/edit" component={Edit} />
                   <Route path="/:tab(profile)" component={Profile} exact={true} />
                   <Route render={() => <h1>Hi</h1>} />
                 </IonRouterOutlet>
