@@ -23,7 +23,16 @@ import MapInputField from '../components/MapInputField';
 import FirebaseContext from '../components/FirebaseContext';
 import UserContext from '../components/UserContext';
 
-const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
+type RouteParams = {
+  id: string;
+};
+
+interface Props extends RouteComponentProps<RouteParams>, React.Props<RouteParams> {}
+
+const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
+  const { id } = match.params;
+  const { key } = location;
+
   const [lat, setLat] = useState(50.06864775407978);
   const [lng, setLng] = useState(19.955816843574212);
   const [name, setName] = useState('');
@@ -32,6 +41,27 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
 
   const firebase = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
+
+  // Sprawdź czy miejsce istnieje / refetch na zmianie aby zaktualizowac
+  useEffect(() => {
+    const fetchPlace = async () => {
+      const placeRef = await firebase.db
+        .collection('places')
+        .doc(id)
+        .get();
+
+      if (placeRef.exists) {
+        const place = placeRef.data();
+        setLat(place.location.latitude);
+        setLng(place.location.longitude);
+        setName(place.name);
+        setDescritpion(place.description);
+      } else {
+        history.push('/places');
+      }
+    };
+    fetchPlace();
+  }, [key]);
 
   // Sprawdz czy formularz ok
   useEffect(() => {
@@ -50,42 +80,42 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   };
 
   // Dodaj miesce do bazy danych
-  const addPlace = async (event: Event) => {
+  const editPlace = async (event: Event) => {
     event.preventDefault();
-
     try {
-      const ref = await firebase.db.collection('places').add({
-        name,
-        description,
-        location: new firebase.GeoPoint(lat, lng),
-        user: user.uid,
-        createdAt: firebase.timestamp,
-      });
-      setName('');
-      setDescritpion('');
-      // Przekieruje do tego miejsca - widok
-      history.push(`/maps`);
+      const ref = await firebase.db
+        .collection('places')
+        .doc(id)
+        .update({
+          name,
+          description,
+          location: new firebase.GeoPoint(lat, lng),
+        });
+      history.push(`/places`);
+    } catch (err) {}
+  };
+
+  const deletePlace = async (event: Event) => {
+    event.preventDefault();
+    try {
+      const ref = await firebase.db
+        .collection('places')
+        .doc(id)
+        .delete();
+      history.push(`/places`);
     } catch (err) {}
   };
 
   const cancelAddingPlace = async (event: Event) => {
     event.preventDefault();
-    setName('');
-    setDescritpion('');
     history.push('/places');
-  };
-
-  // Znajdz miejsca w pobliżu
-  const fetchPlaces = (mapProps: any, map: any) => {
-    const { google } = mapProps;
-    const service = new google.maps.places.PlacesService(map);
   };
 
   return (
     <>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Dodaj Miejsce</IonTitle>
+          <IonTitle>Edytuj Miejsce</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
@@ -126,15 +156,20 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
           </IonRow>
           <IonRow align-items-center justify-content-center>
             <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
-              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }} onReady={fetchPlaces}>
+              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }}>
                 <Marker position={{ lat, lng }} />
               </MapInputField>
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
             <IonCol offset="1" size="10">
-              <IonButton style={{ marginTop: '8px' }} expand="block" onClick={addPlace} disabled={invalid}>
-                Dodaj miejsce
+              <IonButton style={{ marginTop: '8px' }} expand="block" onClick={editPlace} disabled={invalid}>
+                Zapisz zmiany
+              </IonButton>
+            </IonCol>
+            <IonCol offset="1" size="10">
+              <IonButton style={{ marginTop: '8px' }} color="danger" expand="block" onClick={deletePlace}>
+                Usuń Miejsce
               </IonButton>
             </IonCol>
             <IonCol offset="1" size="10">
@@ -149,4 +184,4 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   );
 };
 
-export default Add;
+export default Edit;
