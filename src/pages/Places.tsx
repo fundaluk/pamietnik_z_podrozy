@@ -34,17 +34,18 @@ type PlaceItemProps = {
 
 const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
   const { place, id, history } = props;
-  const goToLink = async (event: Event) => {
+
+  const editPlace = async (event: Event) => {
     if (!event.currentTarget) {
       return;
     }
     event.preventDefault();
-    history.push(`/places/place/${id}`);
+    history.push(`/places/${id}/edit`);
   };
 
   return (
     <IonCard>
-      <IonCardHeader color="primary" onClick={goToLink}>
+      <IonCardHeader color="primary">
         <IonLabel>{place.name}</IonLabel>
       </IonCardHeader>
       <IonCardContent>
@@ -56,7 +57,7 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
           <IonButton expand="block" color="primary" onClick={() => console.log(id)}>
             Dodaj Zdjęcie
           </IonButton>
-          <IonButton expand="block" color="primary" onClick={() => console.log(id)}>
+          <IonButton expand="block" color="primary" onClick={editPlace}>
             Edytuj
           </IonButton>
         </IonList>
@@ -77,7 +78,7 @@ const Places: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     <>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Mapa Miejsc</IonTitle>
+          <IonTitle>Moje Miejsca</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent>
