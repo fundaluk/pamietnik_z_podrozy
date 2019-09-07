@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -35,6 +35,68 @@ type PlaceItemProps = {
 const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
   const { place, id, history } = props;
 
+  const firebase = useContext(FirebaseContext);
+
+  // Zmiana obrazka użytkownika - logika
+  const photoInputRef = useRef(null);
+  const [photoPreview, setPhotoPreview] = useState<string>('');
+  const [photoURL, setPhotoURL] = useState<string>('');
+  const [photoValid, setPhotoValid] = useState<boolean>(false);
+  const [isEditingPhoto, setIsEditingPhoto] = useState<boolean>(false);
+
+  const choosePhoto = () => {
+    const { current } = photoInputRef;
+    // Edytuje zdjęcie
+    setIsEditingPhoto(true);
+    // Czy jest element input
+    if (current) {
+      current.click();
+    }
+  };
+
+  const addPhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { current } = photoInputRef;
+
+    // Czy jest element input i plik
+    if (current && current.files.length > 0) {
+      const file = event.target.files[0];
+      setPhotoValid(true);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+    console.log('choosing photo');
+  };
+
+  const handlePhotoChange = async (event: Event) => {
+    event.preventDefault();
+
+    const { current } = photoInputRef;
+
+    // Gdzie wrzucić plik i jak go nazwać
+    const storageRef = firebase.storage.ref();
+    const profilePhotoRef = storageRef.child(`${id}/image.jpg`);
+
+    // Czy jest element input i plik
+    if (current && current.files.length > 0) {
+      // Wrzuć plik
+      const file = current.files[0];
+
+      try {
+        const snapshot = await profilePhotoRef.put(file);
+        const photoURL = await snapshot.ref.getDownloadURL();
+
+        const ref = await firebase.db
+          .collection('places')
+          .doc(id)
+          .update({
+            photoURL,
+          });
+
+        setPhotoPreview('');
+        setIsEditingPhoto(false);
+      } catch (err) {}
+    }
+  };
+
   const editPlace = async (event: Event) => {
     if (!event.currentTarget) {
       return;
@@ -50,13 +112,32 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
       </IonCardHeader>
       <IonCardContent>
         <IonList>
-          <img src={noPhoto}></img>
+          {photoPreview ? (
+            <img src={photoPreview} alt="preview" style={{ display: 'block', margin: '0 auto' }} />
+          ) : (
+            <img src={place.photoURL || noPhoto} alt="profile" style={{ display: 'block', margin: '0 auto' }}></img>
+          )}
           <IonItem>
             <IonLabel>{place.description}</IonLabel>
           </IonItem>
-          <IonButton expand="block" color="primary" onClick={() => console.log(id)}>
-            Dodaj Zdjęcie
-          </IonButton>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            placeholder="Dodaj zdjęcie"
+            name="photo"
+            onChange={addPhoto}
+            style={{ display: 'none' }}
+          />
+          {isEditingPhoto ? (
+            <IonButton expand="block" onClick={handlePhotoChange} disabled={!photoValid}>
+              Akceptuj
+            </IonButton>
+          ) : (
+            <IonButton expand="block" onClick={choosePhoto}>
+              Dodaj zdjęcie
+            </IonButton>
+          )}
           <IonButton expand="block" color="primary" onClick={editPlace}>
             Edytuj
           </IonButton>
