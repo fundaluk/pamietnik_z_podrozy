@@ -39,7 +39,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-import { flash } from 'ionicons/icons';
+import { add, map, person, pin } from 'ionicons/icons';
 
 const App = () => {
   const firebase = useContext(FirebaseContext);
@@ -65,19 +65,19 @@ const App = () => {
                 </IonRouterOutlet>
                 <IonTabBar slot="bottom">
                   <IonTabButton tab="places" href="/places">
-                    <IonIcon icon={flash} />
+                    <IonIcon icon={pin} />
                     <IonLabel>Miejsca</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="maps" href="/maps">
-                    <IonIcon icon={flash} />
+                    <IonIcon icon={map} />
                     <IonLabel>Mapa</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="add" href="/add">
-                    <IonIcon icon={flash} />
+                    <IonIcon icon={add} />
                     <IonLabel>Dodaj</IonLabel>
                   </IonTabButton>
                   <IonTabButton tab="profile" href="/profile">
-                    <IonIcon icon={flash} />
+                    <IonIcon icon={person} />
                     <IonLabel>Pofil</IonLabel>
                   </IonTabButton>
                 </IonTabBar>

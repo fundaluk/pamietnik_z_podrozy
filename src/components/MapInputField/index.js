@@ -17,5 +17,5 @@ MapInputField.defaultProps = {
 };
 
 export default GoogleApiWrapper({
-  apiKey: process.env.REACT_APP_API_KEY,
+  apiKey: 'AIzaSyB0Wv0x9g9dPD7nAZQ5T65hjzxfE2rE5KY',
 })(MapInputField);

@@ -21,7 +21,6 @@ import {
 import MapInputField from '../components/MapInputField';
 
 import FirebaseContext from '../components/FirebaseContext';
-import UserContext from '../components/UserContext';
 
 type RouteParams = {
   id: string;
@@ -31,7 +30,7 @@ interface Props extends RouteComponentProps<RouteParams>, React.Props<RouteParam
 
 const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
   const { id } = match.params;
-  const { key } = location;
+  const { pathname } = location;
 
   const [lat, setLat] = useState(50.06864775407978);
   const [lng, setLng] = useState(19.955816843574212);
@@ -40,7 +39,6 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
   const [invalid, setInvalid] = useState(true);
 
   const firebase = useContext(FirebaseContext);
-  const { user } = useContext(UserContext);
 
   // Sprawdź czy miejsce istnieje / refetch na zmianie aby zaktualizowac
   useEffect(() => {
@@ -56,12 +54,12 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
         setLng(place.location.longitude);
         setName(place.name);
         setDescritpion(place.description);
-      } else {
-        history.push('/places');
       }
     };
-    fetchPlace();
-  }, [key]);
+    if (pathname !== '/places') {
+      fetchPlace();
+    }
+  }, [pathname]);
 
   // Sprawdz czy formularz ok
   useEffect(() => {
@@ -70,6 +68,7 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
     } else {
       setInvalid(true);
     }
+    console.log('checking form');
   }, [name, description]);
 
   const handleMapClick = (ref: any, map: any, event: any) => {
@@ -83,7 +82,7 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
   const editPlace = async (event: Event) => {
     event.preventDefault();
     try {
-      const ref = await firebase.db
+      await firebase.db
         .collection('places')
         .doc(id)
         .update({
@@ -98,10 +97,15 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
   const deletePlace = async (event: Event) => {
     event.preventDefault();
     try {
-      const ref = await firebase.db
+      await firebase.db
         .collection('places')
         .doc(id)
         .delete();
+
+      // Gdzie wrzucić plik i jak go nazwać
+      const storageRef = firebase.storage.ref();
+      const profilePhotoRef = storageRef.child(`${id}/image.jpg`);
+      await profilePhotoRef.delete();
       history.push(`/places`);
     } catch (err) {}
   };
@@ -121,7 +125,7 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
       <IonContent>
         <IonGrid>
           <IonRow align-items-center justify-content-center>
-            <IonCol size="12" style={{ marginBottom: '16px' }}>
+            <IonCol size="12" style={{ marginBottom: '16px', padding: '0px' }}>
               <IonItem>
                 <IonLabel position="floating" color="primary">
                   Nazwa miejsca
@@ -138,7 +142,7 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol size="12" style={{ marginBottom: '16px' }}>
+            <IonCol size="12" style={{ marginBottom: '16px', padding: '0px' }}>
               <IonItem>
                 <IonLabel position="floating" color="primary">
                   Opis miejsca ({`${description.length}/200`})
@@ -155,24 +159,24 @@ const Edit: React.FunctionComponent<Props> = ({ match, history, location }) => {
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
+            <IonCol size="12" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
               <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }}>
                 <Marker position={{ lat, lng }} />
               </MapInputField>
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10">
-              <IonButton style={{ marginTop: '8px' }} expand="block" onClick={editPlace} disabled={invalid}>
+            <IonCol size="12" style={{ marginTop: '8px', padding: '0px' }}>
+              <IonButton expand="block" onClick={editPlace} disabled={invalid}>
                 Zapisz zmiany
               </IonButton>
             </IonCol>
-            <IonCol offset="1" size="10">
-              <IonButton style={{ marginTop: '8px' }} color="danger" expand="block" onClick={deletePlace}>
+            <IonCol size="12" style={{ marginTop: '8px', padding: '0px' }}>
+              <IonButton color="danger" expand="block" onClick={deletePlace}>
                 Usuń Miejsce
               </IonButton>
             </IonCol>
-            <IonCol offset="1" size="10">
+            <IonCol size="12" style={{ marginTop: '8px', padding: '0px' }}>
               <IonButton expand="block" fill="clear" color="danger" onClick={cancelAddingPlace}>
                 ANULUJ
               </IonButton>

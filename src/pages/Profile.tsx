@@ -34,7 +34,7 @@ const Profile: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
 
   // Sprawdź za każdym razem jak się zmieni username  czy formularz jest poprawny
   useEffect(() => {
-    if (username !== '' && username.length > 3) {
+    if (username !== null && username.length > 3) {
       setUsernameValid(true);
     } else {
       setUsernameValid(false);

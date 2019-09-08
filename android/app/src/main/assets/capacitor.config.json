@@ -1,0 +1,7 @@
+{
+  "appId": "journey.diary.app",
+  "appName": "Journey Diary App",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build"
+}

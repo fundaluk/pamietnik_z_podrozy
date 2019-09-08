@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
 import Firebase from './shared/Firebase';
 import FirebaseContext from './components/FirebaseContext';
 
@@ -13,3 +15,5 @@ ReactDOM.render(
   </FirebaseContext.Provider>,
   document.getElementById('root'),
 );
+
+defineCustomElements(window);

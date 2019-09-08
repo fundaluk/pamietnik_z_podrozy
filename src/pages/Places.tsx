@@ -14,11 +14,11 @@ import {
   IonCol,
   IonCard,
   IonCardHeader,
-  IonLabel,
   IonCardContent,
-  IonList,
-  IonItem,
   IonButton,
+  IonText,
+  IonCardSubtitle,
+  IonCardTitle,
 } from '@ionic/react';
 
 import FirebaseContext from '../components/FirebaseContext';
@@ -40,9 +40,9 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
   // Zmiana obrazka użytkownika - logika
   const photoInputRef = useRef(null);
   const [photoPreview, setPhotoPreview] = useState<string>('');
-  const [photoURL, setPhotoURL] = useState<string>('');
   const [photoValid, setPhotoValid] = useState<boolean>(false);
   const [isEditingPhoto, setIsEditingPhoto] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const choosePhoto = () => {
     const { current } = photoInputRef;
@@ -63,7 +63,6 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
       setPhotoValid(true);
       setPhotoPreview(URL.createObjectURL(file));
     }
-    console.log('choosing photo');
   };
 
   const handlePhotoChange = async (event: Event) => {
@@ -81,10 +80,11 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
       const file = current.files[0];
 
       try {
+        setIsLoading(true);
         const snapshot = await profilePhotoRef.put(file);
         const photoURL = await snapshot.ref.getDownloadURL();
 
-        const ref = await firebase.db
+        await firebase.db
           .collection('places')
           .doc(id)
           .update({
@@ -93,6 +93,7 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
 
         setPhotoPreview('');
         setIsEditingPhoto(false);
+        setIsLoading(false);
       } catch (err) {}
     }
   };
@@ -107,42 +108,46 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
 
   return (
     <IonCard>
-      <IonCardHeader color="primary">
-        <IonLabel>{place.name}</IonLabel>
+      {photoPreview ? (
+        <img src={photoPreview} style={{ height: '240px', width: '100%', objectFit: 'cover' }} alt="preview" />
+      ) : (
+        <img
+          src={place.photoURL || noPhoto}
+          style={{ height: '240px', width: '100%', objectFit: 'cover' }}
+          alt={id}
+        ></img>
+      )}
+      <IonCardHeader>
+        <IonCardSubtitle>NAZWA MIEJSCA</IonCardSubtitle>
+        <IonCardTitle>{place.name}</IonCardTitle>
       </IonCardHeader>
       <IonCardContent>
-        <IonList>
-          {photoPreview ? (
-            <img src={photoPreview} alt="preview" style={{ display: 'block', margin: '0 auto' }} />
-          ) : (
-            <img src={place.photoURL || noPhoto} alt="profile" style={{ display: 'block', margin: '0 auto' }}></img>
-          )}
-          <IonItem>
-            <IonLabel>{place.description}</IonLabel>
-          </IonItem>
-          <input
-            ref={photoInputRef}
-            type="file"
-            accept="image/*"
-            placeholder="Dodaj zdjęcie"
-            name="photo"
-            onChange={addPhoto}
-            style={{ display: 'none' }}
-          />
-          {isEditingPhoto ? (
-            <IonButton expand="block" onClick={handlePhotoChange} disabled={!photoValid}>
-              Akceptuj
-            </IonButton>
-          ) : (
-            <IonButton expand="block" onClick={choosePhoto}>
-              Dodaj zdjęcie
-            </IonButton>
-          )}
-          <IonButton expand="block" color="primary" onClick={editPlace}>
-            Edytuj
-          </IonButton>
-        </IonList>
+        <IonCardSubtitle>OPIS MIEJSCA</IonCardSubtitle>
+        <IonText>
+          <p style={{ marginTop: '6px' }}>{place.description}</p>
+        </IonText>
       </IonCardContent>
+      <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        placeholder="Dodaj zdjęcie"
+        name="photo"
+        onChange={addPhoto}
+        style={{ display: 'none' }}
+      />
+      {isEditingPhoto ? (
+        <IonButton style={{ margin: '0 0 8px' }} expand="full" onClick={handlePhotoChange} disabled={!photoValid}>
+          {isLoading ? 'PROSZĘ CZEKAĆ' : 'Akceptuj'}
+        </IonButton>
+      ) : (
+        <IonButton style={{ margin: '0 0 8px' }} expand="full" onClick={choosePhoto}>
+          Dodaj zdjęcie
+        </IonButton>
+      )}
+      <IonButton style={{ margin: '0px' }} expand="full" color="primary" onClick={editPlace}>
+        Edytuj
+      </IonButton>
     </IonCard>
   );
 };
@@ -150,6 +155,7 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
 const Places: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
   const firebase = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
+
   // Pobierz wsztstkie mejsca dla jeednego usera
   const [places, loading, error] = useCollection(firebase.db.collection('places').where('user', '==', user.uid), {
     snapshotListenOptions: { includeMetadataChanges: true },
@@ -167,7 +173,7 @@ const Places: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
           <IonRow align-items-center justify-content-center>
             {places &&
               places.docs.map(doc => (
-                <IonCol size="12" key={doc.id}>
+                <IonCol size="12" style={{ padding: '0px' }} key={doc.id}>
                   <PlaceItem id={doc.id} place={doc.data()} history={history} />
                 </IonCol>
               ))}

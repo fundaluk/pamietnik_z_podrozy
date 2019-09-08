@@ -72,7 +72,7 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history, location }
     event.preventDefault();
 
     try {
-      const ref = await firebase.db.collection('places').add({
+      await firebase.db.collection('places').add({
         name,
         description,
         location: new firebase.GeoPoint(lat, lng),
@@ -103,7 +103,7 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history, location }
       <IonContent>
         <IonGrid>
           <IonRow align-items-center justify-content-center>
-            <IonCol size="12" style={{ marginBottom: '16px' }}>
+            <IonCol size="12" style={{ marginBottom: '16px', padding: '0px' }}>
               <IonItem>
                 <IonLabel position="floating" color="primary">
                   Nazwa miejsca
@@ -120,7 +120,7 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history, location }
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol size="12" style={{ marginBottom: '16px' }}>
+            <IonCol size="12" style={{ marginBottom: '16px', padding: '0px' }}>
               <IonItem>
                 <IonLabel position="floating" color="primary">
                   Opis miejsca ({`${description.length}/200`})
@@ -137,19 +137,19 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history, location }
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
+            <IonCol size="12" style={{ height: '40vh', minHeight: '320px', marginBottom: '8px', padding: '0px' }}>
               <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }}>
                 <Marker position={{ lat, lng }} />
               </MapInputField>
             </IonCol>
           </IonRow>
           <IonRow align-items-center justify-content-center>
-            <IonCol offset="1" size="10">
-              <IonButton style={{ marginTop: '8px' }} expand="block" onClick={addPlace} disabled={invalid}>
+            <IonCol size="12" style={{ marginTop: '8px', padding: '0px' }}>
+              <IonButton expand="block" onClick={addPlace} disabled={invalid}>
                 Dodaj miejsce
               </IonButton>
             </IonCol>
-            <IonCol offset="1" size="10">
+            <IonCol size="12" style={{ marginTop: '8px', padding: '0px' }}>
               <IonButton expand="block" fill="clear" color="danger" onClick={cancelAddingPlace}>
                 ANULUJ
               </IonButton>

@@ -1,16 +1,33 @@
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+
+import { Plugins } from '@capacitor/core';
 
 import { IonContent, IonGrid, IonCol, IonRow, IonText, IonButton, IonIcon } from '@ionic/react';
 import { logoGoogle } from 'ionicons/icons';
 
 import FirebaseContext from '../components/FirebaseContext';
 
-const GoogleSignup: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
+const GoogleSignup: React.FunctionComponent<RouteComponentProps> = ({ history, location }) => {
   const firebase = useContext(FirebaseContext);
+  const { pathname } = location;
+  const { Device } = Plugins;
 
   const [error, setError] = useState<string | null>('');
+  const [canLogin, setCanLogin] = useState(false);
+
+  useEffect(() => {
+    const checkPlaform = async () => {
+      const info = await Device.getInfo();
+      if (info.platform === 'web') {
+        setCanLogin(true);
+      } else {
+        setError('Nie można  korzstać z tej funkcji na androidzie');
+      }
+    };
+    checkPlaform();
+  }, [pathname]);
 
   // Funckja odpowiedzialna za zalogowanie użytkownia z Google
   const handleLogin = async (event: Event) => {
@@ -59,7 +76,7 @@ const GoogleSignup: React.FunctionComponent<RouteComponentProps> = ({ history })
           </IonRow>
           <IonRow justify-content-center>
             <IonCol style={{ marginTop: '32px' }} offset="1" size="10">
-              <IonButton expand="block" color="primary" type="submit" onClick={handleLogin}>
+              <IonButton expand="block" color="primary" type="submit" onClick={handleLogin} disabled={!canLogin}>
                 Zaloguj
               </IonButton>
             </IonCol>
