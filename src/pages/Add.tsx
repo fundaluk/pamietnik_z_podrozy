@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Marker } from 'google-maps-react';
 
+import { Plugins } from '@capacitor/core';
+
 import {
   IonHeader,
   IonToolbar,
@@ -23,7 +25,7 @@ import MapInputField from '../components/MapInputField';
 import FirebaseContext from '../components/FirebaseContext';
 import UserContext from '../components/UserContext';
 
-const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
+const Add: React.FunctionComponent<RouteComponentProps> = ({ history, location }) => {
   const [lat, setLat] = useState(50.06864775407978);
   const [lng, setLng] = useState(19.955816843574212);
   const [name, setName] = useState('');
@@ -32,6 +34,22 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
 
   const firebase = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
+
+  const { key } = location;
+
+  const { Geolocation } = Plugins;
+
+  // Pobierz lokalizace jeżeli dostępna
+  useEffect(() => {
+    const getCurrentPosition = async () => {
+      try {
+        const coordinates = await Geolocation.getCurrentPosition();
+        setLat(coordinates.coords.latitude);
+        setLng(coordinates.coords.longitude);
+      } catch (err) {}
+    };
+    getCurrentPosition();
+  }, [key]);
 
   // Sprawdz czy formularz ok
   useEffect(() => {
@@ -73,12 +91,6 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
     setName('');
     setDescritpion('');
     history.push('/places');
-  };
-
-  // Znajdz miejsca w pobliżu
-  const fetchPlaces = (mapProps: any, map: any) => {
-    const { google } = mapProps;
-    const service = new google.maps.places.PlacesService(map);
   };
 
   return (
@@ -126,7 +138,7 @@ const Add: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
           </IonRow>
           <IonRow align-items-center justify-content-center>
             <IonCol offset="1" size="10" style={{ height: '40vh', marginBottom: '8px', padding: '0px' }}>
-              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }} onReady={fetchPlaces}>
+              <MapInputField onClick={handleMapClick} lat={lat} lng={lng} center={{ lat, lng }}>
                 <Marker position={{ lat, lng }} />
               </MapInputField>
             </IonCol>
