@@ -1,5 +1,7 @@
 import * as React from 'react';
+
 import { useContext, useState, useRef } from 'react';
+
 import { RouteComponentProps } from 'react-router-dom';
 
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -34,6 +36,7 @@ type PlaceItemProps = {
 
 const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
   const { place, id, history } = props;
+
 
   const firebase = useContext(FirebaseContext);
 
@@ -97,6 +100,8 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
     }
   };
 
+
+
   const editPlace = async (event: Event) => {
     if (!event.currentTarget) {
       return;
@@ -112,6 +117,7 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
       </IonCardHeader>
       <IonCardContent>
         <IonList>
+
           {photoPreview ? (
             <img src={photoPreview} alt="preview" style={{ display: 'block', margin: '0 auto' }} />
           ) : (
@@ -138,6 +144,8 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
               Dodaj zdjęcie
             </IonButton>
           )}
+
+
           <IonButton expand="block" color="primary" onClick={editPlace}>
             Edytuj
           </IonButton>
