@@ -109,11 +109,11 @@ const PlaceItem: React.FunctionComponent<PlaceItemProps> = props => {
   return (
     <IonCard>
       {photoPreview ? (
-        <img src={photoPreview} style={{ height: '240px', width: '100%', objectFit: 'cover' }} alt="preview" />
+        <img src={photoPreview} style={{ height: '240px', width: '100%', objectFit: 'scale-down' }} alt="preview" />
       ) : (
         <img
           src={place.photoURL || noPhoto}
-          style={{ height: '240px', width: '100%', objectFit: 'cover' }}
+          style={{ height: '240px', width: '100%', objectFit: 'scale-down' }}
           alt={id}
         ></img>
       )}
